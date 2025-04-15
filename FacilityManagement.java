@@ -1,0 +1,261 @@
+package backend;
+
+import java.util.*;
+import java.sql.*;
+
+public class FacilityManagement {
+
+	int createBuilding(String buildingName,int floorCount, HashMap<Integer, Integer> map)
+	//int createBuilding(String buildingName, int floorCount)
+	{
+		ResultSet generatedKeys;
+		Connection con = dbCommands.getConnection();
+		Statement st = dbCommands.getStatement();
+		String strSql = "INSERT INTO BUILDING (buildingName, floorCount) VALUES('" + buildingName + "', " + floorCount + ")";
+		
+		try
+		{
+			PreparedStatement preparedStatement = con.prepareStatement(strSql, Statement.RETURN_GENERATED_KEYS);
+		
+			int res = preparedStatement.executeUpdate();
+
+			if (res == 1)
+			{
+				generatedKeys = preparedStatement.getGeneratedKeys();
+				generatedKeys.next();
+				int buildingID = generatedKeys.getInt(1);
+			
+				for (int i=1; i<= floorCount; i++)
+				{
+					int roomCount = map.get(i);
+					strSql = "INSERT INTO FLOOR VALUES(" + i + ", " + roomCount + ", " + buildingID + ")";
+					preparedStatement = con.prepareStatement(strSql, Statement.RETURN_GENERATED_KEYS);
+					
+					res = preparedStatement.executeUpdate();
+
+					if (res == 1)
+					{
+						generatedKeys = preparedStatement.getGeneratedKeys();
+						generatedKeys.next();
+						int floorID = generatedKeys.getInt(1);
+						for (int j=1; j<= roomCount; j++)
+						{
+							strSql = "INSERT INTO ROOM VALUES(" + (i*100 + j) + ", " + floorID + ", " + 4 + ")";
+							res = st.executeUpdate(strSql);
+						}
+					}
+					
+				}
+			}
+			System.out.println(res);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}
+	
+	int removeBuilding(String buildingName)
+	{
+		Statement st = dbCommands.getStatement();
+		String check = "Select ID from BUILDING where buildingName = '" + buildingName + "' ";
+		String remove = "DELETE FROM ROOM WHERE floorID IN (SELECT ID FROM FLOOR WHERE buildingID in (Select ID from BUILDING where buildingName = '" + buildingName + "') ) DELETE FROM FLOOR WHERE buildingID in (Select ID from BUILDING where buildingName = '" + buildingName + "') DELETE FROM BUILDING WHERE ID in (Select ID from BUILDING where buildingName = '" + buildingName + "')";
+		ResultSet resultSet;
+		int count = 0;
+		try {
+			resultSet = st.executeQuery(check);
+			if (!resultSet.next())
+			{
+				System.out.println("Building does not exists:(");
+				return -1;
+				
+			}
+			count = st.executeUpdate(remove);                                                                                                                                                                                                                                                                      
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+	
+	void printBuildingDetails(String buildingName)
+	{
+
+		Statement st = dbCommands.getStatement();
+		String sqlStr = "select * from building where ID = (select ID from BUILDING where buildingName ='" + buildingName + "')";
+		String sqlStr2 = "select * from floor where buildingID = (select ID from BUILDING where buildingName ='" + buildingName + "')";
+		ResultSet resultSet;
+
+		try {
+			resultSet = st.executeQuery(sqlStr);
+			resultSet.next();
+		
+						
+			System.out.println("Building Name: " + resultSet.getString("buildingName"));
+			System.out.println("Floor Count: " + resultSet.getInt("floorCount"));
+			String adminID = resultSet.getString("adminID");			
+			resultSet = st.executeQuery(sqlStr2);
+			
+			int roomCount = 0;
+			while(resultSet.next())
+			{
+				roomCount = roomCount + resultSet.getInt("roomCount");
+			}
+			
+			System.out.println("Room Count: : " + roomCount);	
+			System.out.println("Assigned Admin: " + adminID);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 
+	}
+	
+	int addFacility(String buildingName,String facilityName,int capacity)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "insert into facility (buildingName ,facilityName,capacity,status) values ('" + buildingName + "','" + facilityName +"'," + capacity +",1)";
+		int count = 0;
+		try {
+			count = st.executeUpdate(facility);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	int removeFacility(String buildingName,String facilityName)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "delete from facility where buildingName = '" + buildingName + "' and facilityName = '" + facilityName + "'";
+		int count = 0;
+		try {
+			count = st.executeUpdate(facility);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+	//work on this
+	int blockFacility(String buildingName,String facilityName)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "update facility set currentCapacity = 0,currentUser1 = null,currentUser2 = null,currentUser3 = null, currentUser4 = null,status = 0 where buildingID = (select ID from building where buildingName = '" + buildingName + "') and facilityName = '" + facilityName + "'" ;
+		int count = 0;
+		try {
+			count = st.executeUpdate(facility);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	void viewAllFacilities()
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "select * from facility" ;
+		ResultSet resultSet;
+		
+		try {
+			resultSet = st.executeQuery(facility);
+			
+			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			while(resultSet.next())
+			{
+				int facilityID = resultSet.getInt("facilityID");
+				String buildingName = resultSet.getString("buildingName");
+				String facilityName = resultSet.getString("facilityName");
+				int capacity = resultSet.getInt("capacity");
+				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+				
+				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	void viewAllFacilities(String buildingName)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "select * from facility where buildingName = '" + buildingName + "'" ;
+		ResultSet resultSet;
+		
+		try {
+			resultSet = st.executeQuery(facility);
+			
+			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			while(resultSet.next())
+			{
+				int facilityID = resultSet.getInt("facilityID");
+				String facilityName = resultSet.getString("facilityName");
+				int capacity = resultSet.getInt("capacity");
+				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+				
+				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	void viewFacility(String facilityName)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "select * from facility where facilityName = '" + facilityName + "'" ;
+		ResultSet resultSet;
+		
+		try {
+			resultSet = st.executeQuery(facility);
+			
+			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			while(resultSet.next())
+			{
+				int facilityID = resultSet.getInt("facilityID");
+				String buildingName = resultSet.getString("buildingName");
+				int capacity = resultSet.getInt("capacity");
+				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+				
+				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// changes needed at a good level
+	void displayCurrentUsers(String buildingName,String facilityName)
+	{
+		Statement st = dbCommands.getStatement();
+		String facility = "select * from facility where facilityName = '" + facilityName + "' and buildingID = (select ID from building where buildingName ='" + buildingName + "')" ;
+		ResultSet resultSet;
+		
+		try {
+			resultSet = st.executeQuery(facility);
+			
+			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tCurrent Capacity\tStatus\tCurrent Users");
+			while(resultSet.next())
+			{
+				int facilityID = resultSet.getInt("facilityID");
+				int capacity = resultSet.getInt("capacity");
+				int currentCapacity = resultSet.getInt("currentCapacity");
+				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+				String users = "1." + resultSet.getString("currentUser1") + "  2." + resultSet.getString("currentUser2") + "  3." + resultSet.getString("currentUser3") + "  4." + resultSet.getString("currentUser4"); 
+				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + currentCapacity + " \t\t" + status + "\t" +users);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}
