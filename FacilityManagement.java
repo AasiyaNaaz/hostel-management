@@ -145,10 +145,25 @@ public class FacilityManagement {
 	int blockFacility(String buildingName,String facilityName)
 	{
 		Statement st = dbCommands.getStatement();
-		String facility = "update facility set currentCapacity = 0,currentUser1 = null,currentUser2 = null,currentUser3 = null, currentUser4 = null,status = 0 where buildingID = (select ID from building where buildingName = '" + buildingName + "') and facilityName = '" + facilityName + "'" ;
+		String remove = "delete from reservation where facilityID = (select facilityID from facility where facilityName = '" + facilityName + "' and buildingName = '" +buildingName + "') "
+		String block = "update facility set status = 0 where facilityName =  '" + facilityName + "' and buildingName = '" + buildingName + "'";
 		int count = 0;
 		try {
-			count = st.executeUpdate(facility);
+			count = st.executeUpdate(remove) + st.executeUpdate(block);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	int makeFacilityAvailable(String buildingName,String facilityName)
+	{
+		Statement st = dbCommands.getStatement();
+		String unblock = "update facility set status = 1 where facilityName =  '" + facilityName + "' and buildingName = '" + buildingName + "'";
+		int count = 0;
+		try {
+			count = st.executeUpdate(unblock);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
