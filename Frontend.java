@@ -16,7 +16,6 @@ import java.sql.SQLException;
 
 public class Frontend extends JFrame {
 	User user = new User();
-
     final private Font mainfont = new Font(" Arial", Font.BOLD, 18);    // Fixed font name
     final private Font smallfont = new Font("Arial", Font.PLAIN, 14);  
     JTextField userField;
