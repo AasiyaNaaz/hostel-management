@@ -247,25 +247,24 @@ public class FacilityManagement {
 		}
 	}
 	
-	// changes needed at a good level
 	void displayCurrentUsers(String buildingName,String facilityName)
 	{
 		Statement st = dbCommands.getStatement();
-		String facility = "select * from facility where facilityName = '" + facilityName + "' and buildingID = (select ID from building where buildingName ='" + buildingName + "')" ;
+		String reservation = "select *,S.firstName,S.lastName from reservation JOIN STUDENT S ON studentID = S.ID where facilityID = (select facilityID from facility where facilityName = '" + facilityName +"' and buildingName = '" + buildingName + "')";
 		ResultSet resultSet;
 		
 		try {
-			resultSet = st.executeQuery(facility);
+			resultSet = st.executeQuery(reservation);
 			
-			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tCurrent Capacity\tStatus\tCurrent Users");
+			//System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tCurrent Capacity\tStatus\tCurrent Users");
 			while(resultSet.next())
 			{
+				String name = resultSet.getString("firstName") + resultSet.getString("lastName");
 				int facilityID = resultSet.getInt("facilityID");
-				int capacity = resultSet.getInt("capacity");
-				int currentCapacity = resultSet.getInt("currentCapacity");
-				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
-				String users = "1." + resultSet.getString("currentUser1") + "  2." + resultSet.getString("currentUser2") + "  3." + resultSet.getString("currentUser3") + "  4." + resultSet.getString("currentUser4"); 
-				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + currentCapacity + " \t\t" + status + "\t" +users);
+				String dateForReservation = resultSet.getDate("dateForReservation").toString();
+				String startTime = resultSet.getTime("startTime").toString();
+				String endTime = resultSet.getTime("endTime").toString();
+				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
