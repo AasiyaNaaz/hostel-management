@@ -1,6 +1,5 @@
 package backend;
 
-
 import java.awt.*;															
 import java.util.HashMap;
 import javax.swing.*;
@@ -1454,7 +1453,7 @@ class SignUpDialog extends JDialog {
 
         // Check if the username already exists
         User user = new User();
-        int n = user.createUser(username,password, userTypes.Student, email);
+        int n = user.createUser(username,password, User.userTypes.Student, email);
         if (n == -2) {
         	JOptionPane.showMessageDialog(this, "Username already exists.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
