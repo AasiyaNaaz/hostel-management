@@ -169,12 +169,20 @@ public class Student {
 	{
 		int randomNum = (int)(Math.random() * 1000000) - (int)(Math.random() * 100000); 
 		Statement st=dbCommands.getStatement();
+		String status = "select paymentstatus from feemanagement where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		String fee = "update feemanagement set receiptNumber = " + randomNum + " where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		String fee2 = "update feemanagement set amountPaid = (select totalFee from feemanagement where studentID ='" + studentID + "') where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
-		String fee3 = "update feemanagement set paymentstatus = 1 where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
+		String fee3 = "update feemanagement set paymentStatus = 1 where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		int count= 0;
+		ResultSet resultSet;
 		
 		try {
+			resultSet = st.executeQuery(status);
+			resultSet.next();
+			if (resultSet.getBoolean("paymentStatus"))
+			{
+				return -1;
+			}
 			count = st.executeUpdate(fee) + st.executeUpdate(fee2) + st.executeUpdate(fee3);
 				
 		} catch (SQLException e) {

@@ -257,4 +257,20 @@ public class FeeManagement {
 		
 	}
 	
+	ResultSet viewAcadyrs()
+	{
+		Statement st=dbCommands.getStatement();
+		String student = "SELECT DISTINCT academicYear FROM feemanagement";
+		ResultSet resultSet = null;
+		
+		try {
+			resultSet = st.executeQuery(student);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
 }

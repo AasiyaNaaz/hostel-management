@@ -15,7 +15,7 @@ public class User {
 	String checkUserType(String username)
 	{
 		Statement st=dbCommands.getStatement();
-		String sqlStr ="select userType from USERS where userName = '" + username + "'";
+		String sqlStr ="select userType from USERS where username = '" + username + "'";
 		ResultSet resultSet;
 		String userType = "";
 		try {
@@ -29,10 +29,10 @@ public class User {
 		return userType;
 	}
 	
-	int createUser(String userName,String pwd,userTypes userType,String email)
+	int createUser(String username,String pwd,userTypes userType,String email)
 	{
 		Statement st=dbCommands.getStatement();
-		String sqlStr ="SELECT * FROM STUDENT WHERE ID = '" + userName + "'";
+		String sqlStr ="SELECT * FROM STUDENT WHERE ID = '" + username + "'";
 		ResultSet resultSet;
 		int count = 0;
 		
@@ -46,7 +46,7 @@ public class User {
 			}
 			
 			//Check if user already exists.
-			String sqlStr1 ="SELECT * FROM USERS WHERE userName = '" + userName + "'";
+			String sqlStr1 ="SELECT * FROM USERS WHERE username = '" + username + "'";
 			resultSet = st.executeQuery(sqlStr1);
 			if (resultSet.next()) 
 			{
@@ -54,7 +54,7 @@ public class User {
 				return -2;
 			}
 			
-			sqlStr1 = "INSERT INTO USERS (userName,password,userType,emailID) values ('" + userName + "', '" + pwd +"', '" + userType +"','" + email + "')";			
+			sqlStr1 = "INSERT INTO USERS (username,password,userType,emailID) values ('" + username + "', '" + pwd +"', '" + userType +"','" + email + "')";			
 			count = st.executeUpdate(sqlStr1);
 				//System.out.println(count + " record(s) updated.");
 		} catch (SQLException e) {
@@ -70,7 +70,7 @@ public class User {
 	{
 
 		Statement st=dbCommands.getStatement();
-		String sqlStr1 = "UPDATE USERS SET password = '" + newPassword + "' where userName ='" + username + "'";
+		String sqlStr1 = "UPDATE USERS SET password = '" + newPassword + "' where username ='" + username + "'";
 
 		int count = 0;
 		try {
@@ -88,8 +88,8 @@ public class User {
 	{
 
 		Statement st=dbCommands.getStatement();
-		String sqlStr1 = "UPDATE USERS SET password = '" + newPassword + "' where userName ='" + studentID + "'";
-		String check = "Select password from users where userName = '" + studentID + "'";
+		String sqlStr1 = "UPDATE USERS SET password = '" + newPassword + "' where username ='" + studentID + "'";
+		String check = "Select password from users where username = '" + studentID + "'";
 		int count = 0;
 		ResultSet resultSet;
 		try {
@@ -122,7 +122,7 @@ public class User {
 		
 		try {
 			Statement st=dbCommands.getStatement();
-			String sqlStr ="SELECT password FROM USERS WHERE userName = '" + userID + "'";
+			String sqlStr ="SELECT password FROM USERS WHERE username = '" + userID + "'";
 			resultSet = st.executeQuery(sqlStr);
 			if (!resultSet.next()) 
 			{

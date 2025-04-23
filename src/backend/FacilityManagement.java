@@ -145,7 +145,7 @@ public class FacilityManagement {
 	int blockFacility(String buildingName,String facilityName)
 	{
 		Statement st = dbCommands.getStatement();
-		String remove = "delete from reservation where facilityID = (select facilityID from facility where facilityName = '" + facilityName + "' and buildingName = '" +buildingName + "') "
+		String remove = "delete from reservation where facilityID = (select facilityID from facility where facilityName = '" + facilityName + "' and buildingName = '" +buildingName + "') ";
 		String block = "update facility set status = 0 where facilityName =  '" + facilityName + "' and buildingName = '" + buildingName + "'";
 		int count = 0;
 		try {

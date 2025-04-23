@@ -1,7 +1,7 @@
 package backend;
 
 import java.awt.*;															
-import java.util.HashMap;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.TableView;
@@ -115,7 +115,7 @@ public class Frontend extends JFrame {
         	String ut = user.checkUserType(username);
         	//System.out.println(ut);
         	if (ut.equals("Admin") || ut.equals("SuperAdmin")) {
-                new AdminDashboard1();
+                new AdminDashboard1(username);
             } 
             else {
             	new StudentDashboard1(username);
@@ -195,7 +195,7 @@ class ForgotPasswordDialog extends JDialog {
 
 
 
-class AdminDashboard1 extends JFrame {
+/*class AdminDashboard1 extends JFrame {
     AdminDashboard1() {
         setTitle("Admin Dashboard");
         setSize(800, 600);
@@ -255,79 +255,9 @@ class AdminDashboard1 extends JFrame {
         setVisible(true);
     }
     
-    public void logout() {
-    	int x = JOptionPane.showConfirmDialog(this,"Are  you sure you want to Logout?","Confirm",JOptionPane.YES_NO_OPTION);
-    	if(x == JOptionPane.YES_OPTION) {
-    		setVisible(false);
-    		JOptionPane.showMessageDialog(this,"Successfully Loged out","Success",JOptionPane.INFORMATION_MESSAGE);
-    	}else {
-    		setVisible(true);
-    	}
-    	
-    }
+  
     
-   /* public void dashBoard() {
-    	
-    	JFrame dashBoardFrame = new JFrame("DashBoard");  
-    	dashBoardFrame.setSize(800,500);
-    	
-		dashBoardFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		dashBoardFrame.setLayout(new BorderLayout());
-		
-		
-		JLabel titleLabel = new JLabel("DASHBOARD");
-		titleLabel.setFont(new Font("Arial",Font.BOLD,24));
-		
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(1 ,2,3,3));
-		
-		JButton changePass = new JButton("Change Password");
-		JButton viewProfile = new JButton("View Profile");
-		changePass.setFocusPainted(false);
-		changePass.setBackground(new Color(135,206,250));
-		
-		viewProfile.setFocusPainted(false);
-		viewProfile.setBackground(new Color(135,206,250));
-		
-		topPanel.add(changePass,BorderLayout.CENTER);
-		topPanel.add(viewProfile,BorderLayout.CENTER);
-		
-		dashBoardFrame.add(topPanel,BorderLayout.CENTER);
-		
-		JPanel bottomLabel = new JPanel();
-		bottomLabel.setLayout(new GridLayout(5,2,5,5));
-		 
-		JLabel  heading = new JLabel("Status:");
-		heading.setFont(new Font("Arial",Font.BOLD,24));
-		heading.setForeground(new Color(0,102,204));
-		
-		JButton vac = new JButton();
-		
-		JLabel  h1 = new JLabel("Number of Students :");
-		JButton a1 = new JButton(" ");
-		JLabel  h2 = new JLabel("Vacant rooms :");
-		JButton a2 = new JButton(" ");
-		JLabel  h3= new JLabel("Reading Requests :");
-		JButton a3 = new JButton(" ");
-		JLabel  h4 = new JLabel("Creating Announcement :");
-		JButton a4 = new JButton(" ");
-		
-		bottomLabel.add(heading);
-		bottomLabel.add(vac);
-		bottomLabel.add(h1);
-		bottomLabel.add(a1);
-		bottomLabel.add(h2);
-		bottomLabel.add(a2);
-		bottomLabel.add(a3);
-		bottomLabel.add(h3);
-		bottomLabel.add(a4);
-		bottomLabel.add(h4);
-		
-		dashBoardFrame.add(bottomLabel,BorderLayout.SOUTH);
-		dashBoardFrame.setVisible(true);	
-    }
-}*/
+  
 
  public void dashBoard() {
     	
@@ -391,7 +321,754 @@ class AdminDashboard1 extends JFrame {
 		dashBoardFrame.add(topPanel,BorderLayout.CENTER);	
 		dashBoardFrame.setVisible(true);
     	
+    }*/
+
+ class AdminDashboard1 extends JFrame {
+	 JPanel centerPanel;
+	  
+	 
+    AdminDashboard1(String adminName) {
+        setTitle("Admin Dashboard");
+        setSize(800, 600);
+      String  username1 = adminName;
+      setDefaultCloseOperation(EXIT_ON_CLOSE);
+       // setLayout(new BorderLayout());
+
+        // Left navigation panel
+        JPanel navPanel = new JPanel();
+        navPanel.setBackground(new Color(30, 60, 90));
+        navPanel.setLayout(new GridLayout(12, 1, 5, 5));
+        navPanel.setPreferredSize(new Dimension(250, 0));
+
+        JButton dashboard = new JButton("DashBoard");
+        dashboard.addActionListener(e -> dashBoard( adminName));
+        
+        JButton studentManagement = new JButton("Student Management");
+        studentManagement.addActionListener(e ->studentManagement() );
+        
+        //JButton roomAllocation = new JButton("Room Allocation");
+        JButton feesManagement = new JButton("Fees & Payment");
+        JButton facility = new JButton("Facility");
+        
+        facility.addActionListener(e ->facility());
+        JButton adminManagement = new JButton("Admin Management");
+        JButton notifications = new JButton("Notices");
+        JButton announcement = new JButton("Announcement");
+        announcement.addActionListener(e -> addAnnouncement());
+        
+        JButton reports = new JButton("Requests");
+        
+        JButton roomAllocation = new JButton("Feedback");
+        JButton logout = new JButton("Logout");
+        logout.addActionListener(e -> logout());
+
+        JButton[] btns = {
+            dashboard ,studentManagement,facility, feesManagement, adminManagement,
+            notifications, announcement, reports, logout
+        };
+
+        for (JButton btn : btns) {
+            btn.setFocusPainted(false);
+            btn.setBackground(new Color(30, 60, 90));
+            btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            btn.setForeground(Color.WHITE);
+            navPanel.add(btn);
+        }
+
+        // Wrapper panel for layout control
+        JPanel wrapperPanel = new JPanel(new BorderLayout());
+        wrapperPanel.add(navPanel, BorderLayout.WEST);
+
+        // Center panel for main content
+        centerPanel = new JPanel();
+        JLabel welcomeLabel = new JLabel("WELCOME !! " + username1  , SwingConstants.CENTER);	
+        welcomeLabel.setForeground(new Color(0, 102, 204));
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.add(welcomeLabel, BorderLayout.CENTER);
+
+        // Add panels to the main frame
+        add(wrapperPanel, BorderLayout.WEST);  // Navigation panel
+        add(centerPanel, BorderLayout.CENTER);  // Content area
+
+        setVisible(true);
+        
     }
+    
+    
+    void facility()
+    {
+ 	   centerPanel.removeAll();//clear current center panel
+    	
+   	 JPanel studentManagementPanel = new JPanel();
+   	 
+   	 studentManagementPanel.setLayout(new GridLayout(5,2,5,5));
+   	 
+   	 JButton roomDetails = new JButton("*Create Building");
+   	roomDetails.addActionListener(e -> showCreateBuildingWindow());
+   	JButton changeroom = new JButton( "*View Building details");
+   	changeroom.addActionListener(e -> showPrintBuildingDetailsWindow());
+   	JButton roomcapacity = new JButton("Remove Building");
+   	roomcapacity.addActionListener(e -> showRemoveBuildingWindow());
+   	 JButton viewRoommates = new JButton("*  viewAllFacilities");
+   	viewRoommates.addActionListener(e -> viewFacility());
+   	 JButton blockfacility = new JButton("* blockFacility");
+   	blockfacility.addActionListener(e -> showBlockFacilityWindow());
+   	 JButton deallocateroom= new JButton("*addFacility");
+   	deallocateroom.addActionListener(e -> showAddFacilityWindow());
+   	 JButton viewentries = new JButton("*removeFacility");
+    	JButton viewexits = new JButton( "* viewExits");
+    	JButton ro = new JButton("Make facility Available");
+    	ro.addActionListener(e -> showUnblockFacilityWindow());
+    	JButton r = new JButton("Display current users");
+    	
+   	 
+   	 
+   	 
+   	 JButton[] buttons = {roomDetails, viewRoommates , changeroom ,roomcapacity,blockfacility ,deallocateroom,viewentries,viewexits, ro,r};
+   			 
+   	 for(JButton btn : buttons) {
+   		 btn.setFocusPainted(false);
+            btn.setBackground(new Color(255, 255, 255));
+            btn.setForeground(Color.BLACK);
+            btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            studentManagementPanel.add(btn);
+   	 }
+   	 
+   	centerPanel.add(studentManagementPanel,BorderLayout.WEST);
+   	revalidate();
+   	repaint();
+   	
+  
+   
+    }
+    
+    public void showAddFacilityWindow() {
+        JFrame frame = new JFrame("Add Facility");
+        frame.setSize(350, 250);
+        frame.setLayout(new GridLayout(5, 2, 10, 10));
+
+        JTextField buildingField = new JTextField();
+        JTextField facilityField = new JTextField();
+        JTextField capacityField = new JTextField();
+        JButton submit = new JButton("Add Facility");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingField);
+        frame.add(new JLabel("Facility Name:"));
+        frame.add(facilityField);
+        frame.add(new JLabel("Capacity:"));
+        frame.add(capacityField);
+        frame.add(new JLabel(""));
+        frame.add(submit);
+
+        submit.addActionListener(e -> {
+            String building = buildingField.getText();
+            String facility = facilityField.getText();
+            int capacity = Integer.parseInt(capacityField.getText());
+
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to add this facility?",
+                    "Confirm Add",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                FacilityManagement fm = new FacilityManagement();
+                fm.addFacility(building, facility, capacity);
+                JOptionPane.showMessageDialog(frame, "Facility added.");
+                frame.dispose();
+            }
+        });
+
+        frame.setVisible(true);
+    }
+    
+    public void showRemoveBuildingWindow() {
+        JFrame frame = new JFrame("Remove Building");
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(3, 2, 10, 10));
+
+        JTextField buildingNameField = new JTextField();
+        JButton removeButton = new JButton("Remove Building");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingNameField);
+        frame.add(new JLabel(""));
+        frame.add(removeButton);
+
+        removeButton.addActionListener(e -> {
+            String buildingName = buildingNameField.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to remove building \"" + buildingName + "\"?",
+                    "Confirm Building Removal",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                FacilityManagement fm = new FacilityManagement();
+                fm.removeBuilding(buildingName);
+                JOptionPane.showMessageDialog(frame, "Building removed successfully.");
+                frame.dispose();
+            }
+        });
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    public void showPrintBuildingDetailsWindow() {
+        JFrame frame = new JFrame("Building Details");
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(3, 2, 10, 10));
+
+        JTextField buildingNameField = new JTextField();
+        JButton viewButton = new JButton("View Details");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingNameField);
+        frame.add(new JLabel(""));
+        frame.add(viewButton);
+
+        viewButton.addActionListener(e -> {
+            String buildingName = buildingNameField.getText();
+            FacilityManagement fm = new FacilityManagement();
+            fm.printBuildingDetails(buildingName);
+            frame.dispose();
+        });
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    private void viewFacility()
+    {
+    	  JFrame  viewFacilitydashboard = new JFrame("View Facility");
+    	  viewFacilitydashboard.setSize(400,300);
+    	  viewFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel facilityName =  new JLabel("Facility Name:");
+    	  facilityName.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField facilitynamefield = new JTextField();
+    	  
+    	  mainPanel.add(facilityName);
+    	  mainPanel.add(facilitynamefield);
+    	  
+    	  
+    	 JButton searchButton = new JButton("Search");
+          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+          searchButton.setBackground(new Color(0, 123, 255));  
+          searchButton.setForeground(Color.WHITE);
+          searchButton.setFocusPainted(false);
+          mainPanel.add(searchButton);
+
+          
+          
+          searchButton.addActionListener(e -> {
+        	  String facilityname = facilitynamefield.getText().trim();
+             
+              
+              if (facilityname.isEmpty()) {
+                  JOptionPane.showMessageDialog(this, "This field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
+                  return;
+                  
+              }else {
+                
+            	  Student student = new Student();
+              ResultSet resultSet = student.viewFacility(facilityname);
+              
+              try {
+          		try {
+
+      		        JFrame frame = new JFrame("Student Info");
+      		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      		        frame.setSize(700, 400);
+
+      		      
+      		        String[][] data = new String[50][5];
+      		        int index = 0;
+      		        while (resultSet.next())
+      		        {
+      					
+      		        	data[index][0] = resultSet.getString("facilityID");
+      		        	data[index][1] = facilityname;
+      		        	data[index][2] = resultSet.getString("buildingName");
+      		        	data[index][3] = resultSet.getString("capacity");
+      		        	data[index][4] = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+      		        	index++;
+      		        }
+      		      if (index == 0) {
+      		        JOptionPane.showMessageDialog(viewFacilitydashboard, "No facility found with that name.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
+      		        return;
+      		    }
+
+      		        String[] columnNames = {"Facility ID","Facility Name", "Building Name","Capacity","Status"};
+
+      		        // Create JTable
+      		        JTable table = new JTable(data, columnNames) {
+      		            @Override
+      		            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+      		                Component c = super.prepareRenderer(renderer, row, column);
+      		                if (!isRowSelected(row)) {
+      		                    if (row % 2 == 0) {
+      		                        c.setBackground(Color.WHITE);
+      		                    } else {
+      		                        c.setBackground(new Color(224, 240, 255)); // Light blue
+      		                    }
+      		                } else {
+      		                    c.setBackground(getSelectionBackground());
+      		                }
+      		                return c;
+      		            }
+      		        }; 
+      		        //JTable table = new JTable(data, columnNames);
+
+      		        // Put the table inside a scroll pane
+      		        JScrollPane scrollPane = new JScrollPane(table);
+
+      		        // Add scroll pane to frame
+      		        frame.add(scrollPane, BorderLayout.CENTER);
+
+      		        // Set frame visible
+      		        frame.setVisible(true);
+      			} catch (SQLException e1) {
+      				// TODO Auto-generated catch block
+      				e1.printStackTrace();
+      			}		
+      		} catch (HeadlessException e2) {
+      			// TODO Auto-generated catch block
+      			e2.printStackTrace();
+      		}
+              
+          }});
+              
+             
+              
+    	  
+          viewFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
+          viewFacilitydashboard.setLocationRelativeTo(null);
+          viewFacilitydashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
+    }
+    
+    public void showUnblockFacilityWindow() {
+        JFrame frame = new JFrame("Make Facility Available");
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(4, 2, 10, 10));
+
+        JTextField buildingField = new JTextField();
+        JTextField facilityField = new JTextField();
+        JButton submit = new JButton("Make Available");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingField);
+
+        frame.add(new JLabel("Facility Name:"));
+        frame.add(facilityField);
+
+        frame.add(new JLabel(""));
+        frame.add(submit);
+
+        submit.addActionListener(e -> {
+            String building = buildingField.getText();
+            String facility = facilityField.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to make the facility available?",
+                    "Confirm Unblock",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                FacilityManagement fm = new FacilityManagement();
+                fm.makeFacilityAvailable(building, facility);
+                JOptionPane.showMessageDialog(frame, "Facility is now available.");
+                frame.dispose();
+            }
+        });
+
+        frame.setVisible(true);
+    }
+    
+    public void showBlockFacilityWindow() {
+        JFrame frame = new JFrame("Block Facility");
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(4, 2, 10, 10));
+
+        JTextField buildingField = new JTextField();
+        JTextField facilityField = new JTextField();
+        JButton submit = new JButton("Block Facility");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingField);
+
+        frame.add(new JLabel("Facility Name:"));
+        frame.add(facilityField);
+
+        frame.add(new JLabel(""));
+        frame.add(submit);
+
+        submit.addActionListener(e -> {
+            String building = buildingField.getText();
+            String facility = facilityField.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to block the facility?",
+                    "Confirm Block",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                FacilityManagement fm = new FacilityManagement();
+                fm.blockFacility(building, facility);
+                JOptionPane.showMessageDialog(frame, "Facility Blocked.");
+                frame.dispose();
+            }
+        });
+
+        frame.setVisible(true);
+    }
+    
+    void showCreateBuildingWindow()
+
+    {
+    	  JFrame frame = new JFrame("Create Building");
+       frame.setSize(400, 300);
+       frame.setLayout(new GridLayout(5, 2, 10, 10));
+       
+       JTextField nameField = new JTextField();
+       JTextField floorCountField = new JTextField();
+       JTextArea floorRoomMapArea = new JTextArea("Format: floorNumber=roomCount (one per line)");
+       
+       JButton submit = new JButton("Create Building");
+       
+       frame.add(new JLabel("Building Name:"));
+       frame.add(nameField);
+       
+       frame.add(new JLabel("Number of Floors:"));
+       frame.add(floorCountField);
+       
+       frame.add(new JLabel("Floor-Room Mapping:"));
+       frame.add(new JScrollPane(floorRoomMapArea));
+
+       frame.add(new JLabel(""));
+       frame.add(submit);
+       
+       submit.addActionListener(e -> {
+           String name = nameField.getText();
+           int floorCount = Integer.parseInt(floorCountField.getText());
+           String[] lines = floorRoomMapArea.getText().split("\n");
+           HashMap<Integer, Integer> map = new HashMap<>();
+           
+           try {
+               for (String line : lines) {
+                   String[] parts = line.split("=");
+                   map.put(Integer.parseInt(parts[0].trim()), Integer.parseInt(parts[1].trim()));
+               }
+               
+               int confirm = JOptionPane.showConfirmDialog(frame,
+                       "Are you sure you want to create building \"" + name + "\"?",
+                       "Confirm Building Creation",
+                       JOptionPane.YES_NO_OPTION);
+               
+               if (confirm == JOptionPane.YES_OPTION) {
+                   FacilityManagement fm = new FacilityManagement();
+                   fm.createBuilding(name, floorCount, map);
+                   JOptionPane.showMessageDialog(frame, "Building Created Successfully!");
+                   frame.dispose();
+               }
+
+           } catch (Exception ex) {
+               JOptionPane.showMessageDialog(frame, "Invalid input! Please check format.", "Error", JOptionPane.ERROR_MESSAGE);
+           }
+       });
+       
+       frame.setVisible(true);
+    }
+ 
+    void studentManagement() {
+    	centerPanel.removeAll(); 
+       // clear current center panel
+
+        JPanel studentManagementPanel = new JPanel();
+        studentManagementPanel.setLayout(new GridLayout(4, 2, 5, 5));
+
+        JButton roomDetails = new JButton("Student Details");
+        JButton changeRoom = new JButton("Change Room");
+        JButton roomCapacity = new JButton("View Room Capacities");
+        JButton viewRoommates = new JButton("View All Hostelites");
+        JButton allocateRoom = new JButton("Allocate Room");
+        JButton deallocateRoom = new JButton("Deallocate Room");
+        JButton viewEntries = new JButton("View Entries");
+        JButton viewExits = new JButton("View Exits");
+
+        JButton[] buttons = {
+            roomDetails, viewRoommates, changeRoom, roomCapacity,
+            allocateRoom, deallocateRoom, viewEntries, viewExits
+        };
+
+        for (JButton btn : buttons) {
+            btn.setFocusPainted(false);
+            btn.setBackground(Color.WHITE);
+            btn.setForeground(Color.BLACK);
+            btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            studentManagementPanel.add(btn);
+        }
+
+        centerPanel.add(studentManagementPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+
+     void addAnnouncement() {
+        JFrame announcementFrame = new JFrame("Add Announcement");
+        announcementFrame.setSize(500, 350);
+        announcementFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        announcementFrame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel label = new JLabel("Enter your announcement below:");
+        label.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JTextArea announcementArea = new JTextArea(10, 30);
+        announcementArea.setLineWrap(true);
+        announcementArea.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(announcementArea);
+
+        JButton submitButton = new JButton("Submit Announcement");
+        submitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        submitButton.setBackground(new Color(34, 139, 34));
+        submitButton.setForeground(Color.WHITE);
+        submitButton.setFocusPainted(false);
+
+        submitButton.addActionListener(e -> {
+            String announcementText = announcementArea.getText().trim();
+            if (announcementText.isEmpty()) {
+                JOptionPane.showMessageDialog(announcementFrame, "Announcement cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                // TODO: Save the announcement somewhere (e.g., file, database, list)
+                // For now, we print it
+                System.out.println("New Announcement: " + announcementText);
+
+                JOptionPane.showMessageDialog(announcementFrame, "Announcement submitted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                announcementFrame.dispose();
+            }
+        });
+
+        panel.add(label, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(submitButton, BorderLayout.SOUTH);
+
+        announcementFrame.add(panel);
+        announcementFrame.setVisible(true);
+    }
+
+    
+    public void dashBoard(String adminName) {
+        JFrame dashBoardFrame = new JFrame("DashBoard");
+        dashBoardFrame.setSize(800, 500);
+        dashBoardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+
+        // Title
+        JLabel titleLabel = new JLabel("DASHBOARD");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        mainPanel.add(titleLabel, gbc);
+
+        // Admin name
+        gbc.gridy++;
+        JLabel adminLabel = new JLabel("Admin: " + adminName);
+        adminLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        mainPanel.add(adminLabel, gbc);
+
+        // Buttons - Centered and closer
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+
+        JButton changePass = new JButton("Change Password");
+        changePass.addActionListener(e -> new ChangePassword(this));
+        		
+        
+        changePass.setFocusPainted(false);
+        changePass.setBackground(new Color(135, 206, 250));
+        changePass.setPreferredSize(new Dimension(160, 30));
+
+        JButton viewProfile = new JButton("View Profile");
+        viewProfile.addActionListener(e -> viewProfile());
+        
+        viewProfile.setFocusPainted(false);
+        viewProfile.setBackground(new Color(135, 206, 250));
+        viewProfile.setPreferredSize(new Dimension(160, 30));
+
+        buttonPanel.add(changePass);
+        buttonPanel.add(viewProfile);
+
+        mainPanel.add(buttonPanel, gbc);
+
+        // Info Title
+        gbc.gridy++;
+        JLabel infoLabel = new JLabel("Info");
+        infoLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        infoLabel.setForeground(new Color(0, 102, 204));
+        mainPanel.add(infoLabel, gbc);
+
+        // Info Cards
+        gbc.gridy++;
+        JPanel infoBoxPanel = new JPanel(new GridLayout(1, 4, 15, 15));
+        infoBoxPanel.setPreferredSize(new Dimension(750, 100));
+
+        infoBoxPanel.add(createInfoCard("128", "Total Students"));
+        infoBoxPanel.add(createInfoCard("12", "Vacant Rooms"));
+        infoBoxPanel.add(createInfoCard("7", "Pending Requests"));
+        infoBoxPanel.add(createInfoCard("₹15,000", "Payments Pending"));
+
+        mainPanel.add(infoBoxPanel, gbc);
+
+        dashBoardFrame.add(mainPanel);
+        dashBoardFrame.setLocationRelativeTo(null);
+        dashBoardFrame.setVisible(true);
+    }
+
+    // Helper method to create info card panels
+    private JPanel createInfoCard(String value, String label) {
+        JPanel card = new JPanel();
+        card.setLayout(new BorderLayout());
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        card.setPreferredSize(new Dimension(170, 80));
+
+        JLabel topLabel = new JLabel(value, SwingConstants.CENTER);
+        topLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JLabel bottomLabel = new JLabel(label, SwingConstants.CENTER);
+        bottomLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        card.add(topLabel, BorderLayout.CENTER);
+        card.add(bottomLabel, BorderLayout.SOUTH);
+
+        return card;
+    }  
+    
+    static class ChangePassword extends JDialog {
+
+    	User user = new User();
+        private JTextField userField;
+        private JPasswordField cpassField;
+        private JPasswordField npassField;
+        private JPasswordField newpasstext;
+        private JButton submitButton;
+
+        ChangePassword(JFrame parent) {
+            super(parent, "Change Password", true);
+            setSize(400, 500);
+            setLayout(new GridLayout(9, 1, 5, 5)); // Updated to 9 rows
+            setLocationRelativeTo(parent);  
+
+            JLabel userLabel = new JLabel("Username");
+            userField = new JTextField(20);
+            userLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            userField.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            JLabel cpassLabel = new JLabel("Current Password");
+            cpassField = new JPasswordField();
+            cpassLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            JLabel npassLabel = new JLabel("New Password");
+            npassField = new JPasswordField();
+            npassLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            JLabel cnpassLabel = new JLabel("Confirm New Password");
+            newpasstext = new JPasswordField();
+            cnpassLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            submitButton = new JButton("Submit"); // Use class-level button
+            submitButton.addActionListener(e -> changepass());
+
+            // Add components to dialog
+            add(userLabel);
+            add(userField);
+            add(cpassLabel);
+            add(cpassField);
+            add(npassLabel);
+            add(npassField);
+            add(cnpassLabel);
+            add(newpasstext);
+            add(submitButton);
+
+            setVisible(true);
+        }
+
+        private void changepass() {
+            String username = userField.getText();
+            String currentpass = new String(cpassField.getPassword());
+            String newpass = new String(npassField.getPassword());
+            String confirmpass = new String(newpasstext.getPassword());
+            if(username.isEmpty() || (currentpass.isEmpty() || newpass.isEmpty() || confirmpass.isEmpty() ))
+            {
+            	JOptionPane.showMessageDialog(this,"Please Fill all the credentials!!","Error",JOptionPane.INFORMATION_MESSAGE);
+	
+            }else {
+            	if (newpass.equals(confirmpass))
+                {
+            		int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to change your password?", "Confirm", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_OPTION) 
+                    {
+                    	int n = user.forgetPassword(username,newpass);
+                    	if (n == 1)
+                    	{
+                    		JOptionPane.showMessageDialog(this, "Password reset successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            dispose();
+                    	} else {
+                    		JOptionPane.showMessageDialog(this, "Invalid username!", "Error", JOptionPane.ERROR_MESSAGE);
+                    	}
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+              
+    
+    
+    private void viewProfile() {
+    	   
+    	
+    }
+    
+  
+    	
+    	
+ 
+ public void logout() {
+ 	int x = JOptionPane.showConfirmDialog(this,"Are  you sure you want to Logout?","Confirm",JOptionPane.YES_NO_OPTION);
+ 	if(x == JOptionPane.YES_OPTION) {
+ 		setVisible(false);
+ 		JOptionPane.showMessageDialog(this,"Successfully Loged out","Success",JOptionPane.INFORMATION_MESSAGE);
+ 	}else {
+ 		setVisible(true);
+ 	}
+ 	
+ }
+ 
 }
 
 
@@ -430,7 +1107,7 @@ class StudentDashboard1 extends JFrame {
 
        
        
-        ImageIcon originalIcon = new ImageIcon("src/home.png");
+        ImageIcon originalIcon = new ImageIcon("src/backend/home.png");
         Image scaledImg = originalIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
 
@@ -442,7 +1119,7 @@ class StudentDashboard1 extends JFrame {
         homeButton.setForeground(Color.WHITE);
         homeButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         homeButton.setHorizontalAlignment(SwingConstants.LEFT);
-      //  homeButton.setIconTextGap(10);
+        //homeButton.setIconTextGap(10);
         
         JButton profileButton = new JButton("Profile");
         profileButton.addActionListener(e -> showProfile());
@@ -594,10 +1271,10 @@ class StudentDashboard1 extends JFrame {
                 }
         }
 }
-		private boolean isempty(String username) {
+		/*private boolean isempty(String username) {
 			// TODO Auto-generated method stub
 			return false;
-		}
+		}*/
     }
     
     private void Home() {  
@@ -731,6 +1408,7 @@ class StudentDashboard1 extends JFrame {
     	 JButton checkIn = new JButton("*  Check-In");
     	 checkIn.addActionListener(e -> checkIn());
     	 JButton checkOut= new JButton("*  CheckOut");
+    	 checkOut.addActionListener(e -> checkOut());
     	 
     	 
     	 JButton[] buttons = {roomDetails, viewRoommates , checkIn ,checkOut};
@@ -751,9 +1429,162 @@ class StudentDashboard1 extends JFrame {
     
     private void checkIn()
     {
-    	
+    	  JFrame  checkindashboard = new JFrame("Check In");
+    	  checkindashboard.setSize(400,300);
+    	  checkindashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel studentId =  new JLabel("Student ID:");
+    	  studentId.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField studentidfield = new JTextField();
+    	  
+    	  
+    	  JLabel contact =  new JLabel("Contact No:");
+    	  contact.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField contactfield = new JTextField();
+    	  
+    	  mainPanel.add(studentId);
+    	  mainPanel.add(studentidfield);
+    	  mainPanel.add(contact);
+    	  mainPanel.add(contactfield);
+    	  
+    	  
+    	 JButton submitButton = new JButton("Check - In");
+    	// submitButton.addActionListener(e -> CheckinSubmit());
+          submitButton.setFont(new Font("Arial", Font.BOLD, 14));
+          submitButton.setBackground(new Color(0, 123, 255));  // Bootstrap primary color
+          submitButton.setForeground(Color.WHITE);
+          submitButton.setFocusPainted(false);
+          mainPanel.add(submitButton);
+
+          
+          
+          submitButton.addActionListener(e -> {
+              String studentid = studentidfield.getText().trim();
+              String contactno = contactfield.getText().trim();
+             
+              long contactNumber = 0;
+              if (!studentid.equals(username)) {
+                  JOptionPane.showMessageDialog(this, "You can only check in as yourself!", "Unauthorized", JOptionPane.ERROR_MESSAGE);
+                  return;
+                  
+              }else {
+              try {
+            	     contactNumber = Long.parseLong(contactno);
+            	    // Now you can use contactNumber (e.g., check against DB or update record)
+            	} catch (NumberFormatException e1) {
+            	    JOptionPane.showMessageDialog(this, "Invalid contact number! Please enter digits only.", "Error", JOptionPane.ERROR_MESSAGE);
+            	}   
+              int r = student.checkIn(studentid, contactNumber);
+              if(r == -1) {
+            	  JOptionPane.showMessageDialog(this,"student is already checked in!","Error",JOptionPane.ERROR_MESSAGE);
+              
+              }else {
+            	  JOptionPane.showMessageDialog(this,"Successfully Checked In!","Error",JOptionPane.INFORMATION_MESSAGE);
+              }
+          }});
+              
+             
+              
+    	  
+    	  checkindashboard.add(mainPanel,BorderLayout.NORTH);
+    	  checkindashboard.setLocationRelativeTo(null);
+    	  checkindashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
+    }
+   
+    
+
+    private void checkOut()
+    {
+    	  JFrame  checkindashboard = new JFrame("Check Out");
+    	  checkindashboard.setSize(450,350);
+    	  checkindashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(4,2,10,10));
+    	  
+    	  JLabel studentId =  new JLabel("Student ID:");
+    	  studentId.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField studentidfield = new JTextField();
+    	  
+    	  JLabel cityOfVisit = new JLabel("City Of Visit:");
+    	  cityOfVisit.setFont(new Font("Arial",Font.BOLD,14));
+    	  JTextField cov = new JTextField();
+    	  
+    	  
+    	  JLabel contact =  new JLabel("Contact No:");
+    	  contact.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField contactfield = new JTextField();
+    	  
+    	  mainPanel.add(studentId);
+    	  mainPanel.add(studentidfield);
+    	  mainPanel.add(cityOfVisit);
+    	  mainPanel.add(cov);
+    	  mainPanel.add(contact);
+    	  mainPanel.add(contactfield);
+    	  
+    	  
+    	 JButton submitButton = new JButton("Check - Out");
+    	// submitButton.addActionListener(e -> CheckOutSubmit());
+          submitButton.setFont(new Font("Arial", Font.BOLD, 14));
+          submitButton.setBackground(new Color(0, 123, 255));  // Bootstrap primary color
+          submitButton.setForeground(Color.WHITE);
+          submitButton.setFocusPainted(false);
+          mainPanel.add(submitButton);
+          
+          submitButton.addActionListener(e -> {
+              String studentid = studentidfield.getText().trim();
+              String contactno = contactfield.getText().trim();
+              String cityofvisit = cov.getText();
+              long contactNumber = 0;
+              
+              if (!studentid.equals(username)) {
+                  JOptionPane.showMessageDialog(this, "You can only check out as yourself!", "Unauthorized", JOptionPane.ERROR_MESSAGE);
+                  return;
+              }
+
+              try {
+            	     contactNumber = Long.parseLong(contactno);
+            	    // Now you can use contactNumber (e.g., check against DB or update record)
+            	} catch (NumberFormatException e1) {
+            	    JOptionPane.showMessageDialog(this, "Invalid contact number! Please enter digits only.", "Error", JOptionPane.ERROR_MESSAGE);
+            	}   
+              int r = student.checkOut(studentid, cityofvisit, contactNumber);
+              if(r == -1) {
+            	  JOptionPane.showMessageDialog(this,"Student isnt assigned to room yet and cannot check out","Error",JOptionPane.ERROR_MESSAGE);
+              } if(r == -2) {
+            	  
+            	  JOptionPane.showMessageDialog(this,"student is already checked out!","Error",JOptionPane.ERROR_MESSAGE);
+              }else {
+            	  JOptionPane.showMessageDialog(this,"Successfully Checked Out!","Error",JOptionPane.INFORMATION_MESSAGE);
+              }
+          });
+              
+              
+
+    	  
+    	  checkindashboard.add(mainPanel,BorderLayout.NORTH);
+    	  checkindashboard.setLocationRelativeTo(null);
+    	  checkindashboard.setVisible(true);
+    	  
+    		  
+    	  
+    	  
     }
     
+    
+  
+ 
     private void viewRommates()
     {
     	ResultSet resultset = student.viewRoommates(username);
@@ -862,7 +1693,7 @@ class StudentDashboard1 extends JFrame {
         
         JPanel feeManagementPanel = new JPanel();
    	 
-   	 feeManagementPanel.setLayout(new GridLayout(3,1,5,5));
+        feeManagementPanel.setLayout(new GridLayout(4, 1, 5, 5));
    	 
    	 JButton viewRecords = new JButton("*  View FeeRecords");
    	 viewRecords.addActionListener(e -> viewFeeRecords());
@@ -884,10 +1715,17 @@ class StudentDashboard1 extends JFrame {
             feeManagementPanel.add(btn);
    	 }
 
-
-        centerPanel.add(feeManagementPanel, BorderLayout.WEST);
+   	 	centerPanel.add(feeManagementPanel, BorderLayout.CENTER);
+   	 	
         revalidate();
         repaint();
+    }
+    
+    private void payFees()
+    {
+    	//int result = student.payFees(username,acadyr);
+    	//System.out.println("Pay Fees button clicked!");
+    	StudentForm form = new StudentForm();// it will take care of payement too
     }
     
     private void viewDues()
@@ -1016,11 +1854,6 @@ class StudentDashboard1 extends JFrame {
 		}
     }
     
-    private void payFees()
-    {
-    	//int result = student.payFees(username,acadyr);
-    }
-    
     private void viewFeeRecords()
     {
     	ResultSet resultSet = student.viewFeeRecords(username);
@@ -1093,11 +1926,15 @@ class StudentDashboard1 extends JFrame {
    	 facilityManagementPanel.setLayout(new GridLayout(3,2,5,5));
    	  	 
    	 JButton viewFacility = new JButton("*  Search a Facility");
+   	 viewFacility.addActionListener(e -> viewFacility());
    	 JButton viewFacilityinBuilding = new JButton("*  View all Facilities in a Building");
+   	 viewFacilityinBuilding.addActionListener(e -> viewFacilityinBuilding());
    	 JButton viewAllFacility = new JButton("*  View all Facilities");
    	 viewAllFacility.addActionListener(e -> viewAllFacility());
    	 JButton reserveFacility = new JButton("* Reserve Facility");
+   	 reserveFacility.addActionListener(e -> reserveFacility());
    	 JButton cancelReservation = new JButton("*  Cancel Reservation");
+   	 cancelReservation.addActionListener(e -> cancelFacility());
    	 JButton viewReservations = new JButton("*  View Reservations");
    	 viewReservations.addActionListener(e -> viewReservations());
    	 
@@ -1115,6 +1952,411 @@ class StudentDashboard1 extends JFrame {
         centerPanel.add(facilityManagementPanel, BorderLayout.WEST);
         revalidate();
         repaint();
+    }
+    
+    private void cancelFacility()
+    {
+    	  JFrame  cancelFacilitydashboard = new JFrame("Cancel Facility");
+    	  cancelFacilitydashboard.setSize(600,300);
+    	  cancelFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel buildingName =  new JLabel("Building Name:");
+    	  buildingName.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField buildingnamefield = new JTextField();
+    	  mainPanel.add(buildingName);
+    	  mainPanel.add(buildingnamefield);
+    	  
+    	  JLabel facilityName =  new JLabel("Facility Name:");
+    	  facilityName.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField facilityNameField = new JTextField();
+    	  mainPanel.add(facilityName);
+    	  mainPanel.add(facilityNameField);
+    	  
+    	  JLabel dateForReservation =  new JLabel("Date for reservation:");
+    	  dateForReservation.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField dateForReservationField = new JTextField();
+    	  mainPanel.add(dateForReservation);
+    	  mainPanel.add(dateForReservationField);
+    	  
+    	  JLabel startTime =  new JLabel("Start Time:");
+    	  startTime.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField startTimeField = new JTextField();
+    	  mainPanel.add(startTime);
+    	  mainPanel.add(startTimeField);
+    	  
+    	  JLabel endTime =  new JLabel("End Time:");
+    	  endTime.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField endTimeField = new JTextField();
+    	  mainPanel.add(endTime);
+    	  mainPanel.add(endTimeField);
+    	  
+    	  
+    	 JButton searchButton = new JButton("cancel");
+          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+          searchButton.setBackground(new Color(0, 123, 255));  
+          searchButton.setForeground(Color.WHITE);
+          searchButton.setFocusPainted(false);
+          mainPanel.add(searchButton);
+
+          
+          
+          searchButton.addActionListener(e -> {
+        	  String buildingname = buildingnamefield.getText().trim();
+        	  String facilityname = facilityNameField.getText().trim();
+        	  String dateforreservation = dateForReservationField.getText().trim();
+        	  String starttime = startTimeField.getText().trim();
+        	  String endtime = endTimeField.getText().trim();
+             
+        	  if (buildingname.isEmpty() || facilityname.isEmpty() || dateforreservation.isEmpty() || starttime.isEmpty() || endtime.isEmpty() ) {
+                  JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                  return;
+              } else {
+            	  int r = student.cancelReservation(username, facilityname, buildingname, dateforreservation, starttime, endtime);
+            	  if(r == 0)
+            	  {
+            		  JOptionPane.showMessageDialog(this, "No reservation made to cancel.", "error", JOptionPane.ERROR_MESSAGE);
+            		  return;
+            	  } else {
+            		  JOptionPane.showMessageDialog(this, "Reservation cancelled", "Information", JOptionPane.INFORMATION_MESSAGE);
+            		  cancelFacilitydashboard.setVisible(false);
+            	  }
+              }        
+          });
+              
+             
+              
+    	  
+          cancelFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
+          cancelFacilitydashboard.setLocationRelativeTo(null);
+          cancelFacilitydashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
+    }
+
+    private void reserveFacility()
+    {
+    	  JFrame  reserveFacilitydashboard = new JFrame("Reserve Facility");
+    	  reserveFacilitydashboard.setSize(600,300);
+    	  reserveFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel buildingName =  new JLabel("Building Name:");
+    	  buildingName.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField buildingnamefield = new JTextField();
+    	  mainPanel.add(buildingName);
+    	  mainPanel.add(buildingnamefield);
+    	  
+    	  JLabel facilityName =  new JLabel("Facility Name:");
+    	  facilityName.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField facilityNameField = new JTextField();
+    	  mainPanel.add(facilityName);
+    	  mainPanel.add(facilityNameField);
+    	  
+    	  JLabel dateForReservation =  new JLabel("Date for reservation:");
+    	  dateForReservation.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField dateForReservationField = new JTextField();
+    	  mainPanel.add(dateForReservation);
+    	  mainPanel.add(dateForReservationField);
+    	  
+    	  JLabel startTime =  new JLabel("Start Time:");
+    	  startTime.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField startTimeField = new JTextField();
+    	  mainPanel.add(startTime);
+    	  mainPanel.add(startTimeField);
+    	  
+    	  JLabel endTime =  new JLabel("End Time:");
+    	  endTime.setFont(new Font("Arial",Font.BOLD,14));	  
+    	  JTextField endTimeField = new JTextField();
+    	  mainPanel.add(endTime);
+    	  mainPanel.add(endTimeField);
+    	  
+    	  
+    	 JButton searchButton = new JButton("Reserve");
+          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+          searchButton.setBackground(new Color(0, 123, 255));  
+          searchButton.setForeground(Color.WHITE);
+          searchButton.setFocusPainted(false);
+          mainPanel.add(searchButton);
+
+          
+          
+          searchButton.addActionListener(e -> {
+        	  String buildingname = buildingnamefield.getText().trim();
+        	  String facilityname = facilityNameField.getText().trim();
+        	  String dateforreservation = dateForReservationField.getText().trim();
+        	  String starttime = startTimeField.getText().trim();
+        	  String endtime = endTimeField.getText().trim();
+             
+        	  if (buildingname.isEmpty() || facilityname.isEmpty() || dateforreservation.isEmpty() || starttime.isEmpty() || endtime.isEmpty() ) {
+                  JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                  return;
+              } else {
+            	  int r = student.reserveFacility(username, facilityname, buildingname, dateforreservation, starttime, endtime);
+            	  if(r == -1)
+            	  {
+            		  JOptionPane.showMessageDialog(this, "Facility is currently unavialiable for reservation.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            		  return;
+            	  } 
+            	  if (r == -2)
+            	  {
+            		  JOptionPane.showMessageDialog(this, "This facility is already fully booked.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            		  return;
+            	  } else {
+            		  JOptionPane.showMessageDialog(this, "Reservation made successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                      reserveFacilitydashboard.setVisible(false);
+            	  }
+              }        
+          });
+              
+             
+              
+    	  
+          reserveFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
+          reserveFacilitydashboard.setLocationRelativeTo(null);
+          reserveFacilitydashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
+    }
+    
+    private void viewFacilityinBuilding()
+    {
+    	  JFrame  viewFacilitydashboard = new JFrame("View Facility");
+    	  viewFacilitydashboard.setSize(400,300);
+    	  viewFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel buildingName =  new JLabel("Building Name:");
+    	  buildingName.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField buildingnamefield = new JTextField();
+    	  
+    	  mainPanel.add(buildingName);
+    	  mainPanel.add(buildingnamefield);
+    	  
+    	  
+    	 JButton searchButton = new JButton("Search");
+          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+          searchButton.setBackground(new Color(0, 123, 255));  
+          searchButton.setForeground(Color.WHITE);
+          searchButton.setFocusPainted(false);
+          mainPanel.add(searchButton);
+
+          
+          
+          searchButton.addActionListener(e -> {
+        	  String buildingname = buildingnamefield.getText().trim();
+             
+              
+              if (buildingname.isEmpty()) {
+                  JOptionPane.showMessageDialog(this, "This field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
+                  return;
+                  
+              }else {
+                
+              ResultSet resultSet = student.viewAllFacilities(buildingname);
+              
+              try {
+          		try {
+
+      		        JFrame frame = new JFrame("Student Info");
+      		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      		        frame.setSize(700, 400);
+
+      		      
+      		        String[][] data = new String[50][5];
+      		        int index = 0;
+      		        while (resultSet.next())
+      		        {
+      					
+      		        	data[index][0] = resultSet.getString("facilityID");
+      		        	data[index][1] = resultSet.getString("facilityName");
+      		        	data[index][2] = buildingname;
+      		        	data[index][3] = resultSet.getString("capacity");
+      		        	data[index][4] = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+      		        	index++;
+      		        }
+      		      if (index == 0) {
+      		        JOptionPane.showMessageDialog(viewFacilitydashboard, "No facility found with that name.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
+      		        return;
+      		    }
+
+      		        String[] columnNames = {"Facility ID","Facility Name", "Building Name","Capacity","Status"};
+
+      		        // Create JTable
+      		        JTable table = new JTable(data, columnNames) {
+      		            @Override
+      		            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+      		                Component c = super.prepareRenderer(renderer, row, column);
+      		                if (!isRowSelected(row)) {
+      		                    if (row % 2 == 0) {
+      		                        c.setBackground(Color.WHITE);
+      		                    } else {
+      		                        c.setBackground(new Color(224, 240, 255)); // Light blue
+      		                    }
+      		                } else {
+      		                    c.setBackground(getSelectionBackground());
+      		                }
+      		                return c;
+      		            }
+      		        }; 
+      		        //JTable table = new JTable(data, columnNames);
+
+      		        // Put the table inside a scroll pane
+      		        JScrollPane scrollPane = new JScrollPane(table);
+
+      		        // Add scroll pane to frame
+      		        frame.add(scrollPane, BorderLayout.CENTER);
+
+      		        // Set frame visible
+      		        frame.setVisible(true);
+      			} catch (SQLException e1) {
+      				// TODO Auto-generated catch block
+      				e1.printStackTrace();
+      			}		
+      		} catch (HeadlessException e2) {
+      			// TODO Auto-generated catch block
+      			e2.printStackTrace();
+      		}
+              
+          }});
+              
+             
+              
+    	  
+          viewFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
+          viewFacilitydashboard.setLocationRelativeTo(null);
+          viewFacilitydashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
+    }
+    
+    private void viewFacility()
+    {
+    	  JFrame  viewFacilitydashboard = new JFrame("View Facility");
+    	  viewFacilitydashboard.setSize(400,300);
+    	  viewFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	  
+    	  JPanel mainPanel = new JPanel();
+    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
+    	  
+    	  JLabel facilityName =  new JLabel("Facility Name:");
+    	  facilityName.setFont(new Font("Arial",Font.BOLD,14));
+    	  
+    	  JTextField facilitynamefield = new JTextField();
+    	  
+    	  mainPanel.add(facilityName);
+    	  mainPanel.add(facilitynamefield);
+    	  
+    	  
+    	 JButton searchButton = new JButton("Search");
+          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+          searchButton.setBackground(new Color(0, 123, 255));  
+          searchButton.setForeground(Color.WHITE);
+          searchButton.setFocusPainted(false);
+          mainPanel.add(searchButton);
+
+          
+          
+          searchButton.addActionListener(e -> {
+        	  String facilityname = facilitynamefield.getText().trim();
+             
+              
+              if (facilityname.isEmpty()) {
+                  JOptionPane.showMessageDialog(this, "This field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
+                  return;
+                  
+              }else {
+                
+              ResultSet resultSet = student.viewFacility(facilityname);
+              
+              try {
+          		try {
+
+      		        JFrame frame = new JFrame("Student Info");
+      		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      		        frame.setSize(700, 400);
+
+      		      
+      		        String[][] data = new String[50][5];
+      		        int index = 0;
+      		        while (resultSet.next())
+      		        {
+      					
+      		        	data[index][0] = resultSet.getString("facilityID");
+      		        	data[index][1] = facilityname;
+      		        	data[index][2] = resultSet.getString("buildingName");
+      		        	data[index][3] = resultSet.getString("capacity");
+      		        	data[index][4] = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
+      		        	index++;
+      		        }
+      		      if (index == 0) {
+      		        JOptionPane.showMessageDialog(viewFacilitydashboard, "No facility found with that name.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
+      		        return;
+      		    }
+
+      		        String[] columnNames = {"Facility ID","Facility Name", "Building Name","Capacity","Status"};
+
+      		        // Create JTable
+      		        JTable table = new JTable(data, columnNames) {
+      		            @Override
+      		            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+      		                Component c = super.prepareRenderer(renderer, row, column);
+      		                if (!isRowSelected(row)) {
+      		                    if (row % 2 == 0) {
+      		                        c.setBackground(Color.WHITE);
+      		                    } else {
+      		                        c.setBackground(new Color(224, 240, 255)); // Light blue
+      		                    }
+      		                } else {
+      		                    c.setBackground(getSelectionBackground());
+      		                }
+      		                return c;
+      		            }
+      		        }; 
+      		        //JTable table = new JTable(data, columnNames);
+
+      		        // Put the table inside a scroll pane
+      		        JScrollPane scrollPane = new JScrollPane(table);
+
+      		        // Add scroll pane to frame
+      		        frame.add(scrollPane, BorderLayout.CENTER);
+
+      		        // Set frame visible
+      		        frame.setVisible(true);
+      			} catch (SQLException e1) {
+      				// TODO Auto-generated catch block
+      				e1.printStackTrace();
+      			}		
+      		} catch (HeadlessException e2) {
+      			// TODO Auto-generated catch block
+      			e2.printStackTrace();
+      		}
+              
+          }});
+              
+             
+              
+    	  
+          viewFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
+          viewFacilitydashboard.setLocationRelativeTo(null);
+          viewFacilitydashboard.setVisible(true);
+    	  
+    	 
+    	  
+    	  
     }
     
     private void viewReservations()
@@ -1317,6 +2559,106 @@ class StudentDashboard1 extends JFrame {
 
     }
     
+}
+
+class StudentForm extends JFrame {
+
+	Student student = new Student();
+	FeeManagement feem = new FeeManagement();
+    private JTextField nameField;
+    private JComboBox<String> yearDropdown;
+    private JButton submitButton;
+
+    public StudentForm() {
+        setTitle("Student Information Form");
+        setSize(400, 250);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null); // center on screen
+
+        // Panel setup
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(230, 245, 255)); // light blue
+        panel.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // spacing
+
+        // Name Label
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setForeground(Color.DARK_GRAY);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        panel.add(nameLabel, gbc);
+
+        // Name Field
+        nameField = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        panel.add(nameField, gbc);
+
+        // Academic Year Label
+        JLabel yearLabel = new JLabel("Academic Year:");
+        yearLabel.setForeground(Color.DARK_GRAY);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        panel.add(yearLabel, gbc);
+
+        // Academic Year Dropdown
+        ResultSet resultSet = feem.viewAcadyrs();
+        int count;
+        ArrayList<String> years = new ArrayList<>();
+        try {
+			while(resultSet.next())
+			{
+				years.add(resultSet.getString("academicYear"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //String[] years = {"Freshman", "Sophomore", "Junior", "Senior", "Graduate"};
+        yearDropdown = new JComboBox<>(years.toArray(new String[0]));
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        panel.add(yearDropdown, gbc);
+
+        // Submit Button
+        submitButton = new JButton("Submit");
+        submitButton.setBackground(new Color(173, 216, 230)); // light blue
+        submitButton.setForeground(Color.BLACK);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(submitButton, gbc);
+
+        // Action Listener
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText().trim();
+                String year = (String) yearDropdown.getSelectedItem();
+
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter your name.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                	int r = student.payFees(name, year);
+                	if (r == -1)
+                	{
+                		JOptionPane.showMessageDialog(null, "Payment already completed!.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                	} else {
+                		JOptionPane.showMessageDialog(null, "Payment completed succesfully","success", JOptionPane.INFORMATION_MESSAGE);
+                	}
+                    
+                }
+            }
+        });
+
+        // Frame Setup
+        add(panel);
+        setVisible(true);
+    }
 }
           
 class SignUpDialog extends JDialog {
