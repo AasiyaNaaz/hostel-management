@@ -6,6 +6,7 @@ HOSTEL MANAGEMENT SYSTEM
 A Java-based GUI application that manages hostel operations for both administrators and students. It provides user authentication, facility management, student information handling, fee processing, and more. Built using Java Swing and JDBC.
 
 FEATURES
+
  Authentication
  
 Secure login system for Admin and Student users.
@@ -16,6 +17,7 @@ Sign-up interface for new students.
 
 
 ADMIN DASHBOARD
+
 Facility management: Add, view, block/unblock, and remove facilities.
 
 Building management: Create, delete, and inspect buildings and their room structures.
@@ -28,6 +30,7 @@ Announcement broadcasting and notice management.
 
 
 STUDENT DASHBOARD
+
 View personal room information and roommate details.
 
 Submit check-in and check-out forms.
@@ -42,6 +45,7 @@ Contact directory for emergency and admin numbers.
 
 
 TECHNOLOGIES USED:
+
 Java SE
 
 Swing (Java GUI Toolkit)
@@ -53,6 +57,8 @@ MySQL or another compatible RDBMS (assumed from JDBC usage)
 
 
 NOTES
+
+
 Exception handling is in place but could be improved with logging.
 
 The UI is built entirely with Swing – modularity and MVC pattern adoption is recommended for scalability.
@@ -63,6 +69,8 @@ Multi-threading could improve responsiveness on heavy database operations.
 
 
 AUTHOR
+
+
 Tanuja Jamadar(CS24B015) and Aasiya Naaz(CS24B002)
 
 
