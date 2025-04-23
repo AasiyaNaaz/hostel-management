@@ -72,14 +72,14 @@ public class Student {
 			resultSet.next();
 			if (resultSet.getInt("roomID") == 0)
 			{
-				System.out.println("Student isnt assigned to room yet and cannot check out");
+				//System.out.println("Student isnt assigned to room yet and cannot check out");
 				return -1;
 			}
 			resultSet = st.executeQuery(checkoutStatus);
 			resultSet.next();
 			if (resultSet.getBoolean("checkOutStatus"))
 			{
-				System.out.println("student is already checked out!");
+				//System.out.println("student is already checked out!");
 				return -2;
 			}
 			count = st.executeUpdate(checkout) + st.executeUpdate(status) + st.executeUpdate(datetime);
@@ -171,7 +171,7 @@ public class Student {
 		Statement st=dbCommands.getStatement();
 		String status = "select paymentstatus from feemanagement where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		String fee = "update feemanagement set receiptNumber = " + randomNum + " where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
-		String fee2 = "update feemanagement set amountPaid = (select totalFee from feemanagement where studentID ='" + studentID + "') where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
+		String fee2 = "update feemanagement set amountPaid = (select totalFee from feemanagement where studentID ='" + studentID + "' and academicYear = '" + acadyr + "') where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		String fee3 = "update feemanagement set paymentStatus = 1 where studentID = '" + studentID + "' and academicYear = '" + acadyr + "'";
 		int count= 0;
 		ResultSet resultSet;
@@ -183,7 +183,9 @@ public class Student {
 			{
 				return -1;
 			}
-			count = st.executeUpdate(fee) + st.executeUpdate(fee2) + st.executeUpdate(fee3);
+			count = st.executeUpdate(fee);
+			count += st.executeUpdate(fee2);
+			count += st.executeUpdate(fee3);
 				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -274,17 +276,17 @@ public class Student {
 		return resultSet;
 	}
 	
-	void viewAllFacilities(String buildingName)
+	ResultSet viewAllFacilities(String buildingName)
 	{
 		Statement st = dbCommands.getStatement();
 		String facility = "select * from facility where buildingName = '" + buildingName + "'" ;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 		
 		try {
 			resultSet = st.executeQuery(facility);
 			
-			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
-			while(resultSet.next())
+			//System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			/*while(resultSet.next())
 			{
 				int facilityID = resultSet.getInt("facilityID");
 				String facilityName = resultSet.getString("facilityName");
@@ -292,24 +294,25 @@ public class Student {
 				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
 				
 				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
-			}
+			}*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resultSet;
 	}
 	
-	void viewFacility(String facilityName)
+	ResultSet viewFacility(String facilityName)
 	{
 		Statement st = dbCommands.getStatement();
 		String facility = "select * from facility where facilityName = '" + facilityName + "'" ;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 		
 		try {
 			resultSet = st.executeQuery(facility);
 			
-			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
-			while(resultSet.next())
+			//System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			/*while(resultSet.next())
 			{
 				int facilityID = resultSet.getInt("facilityID");
 				String buildingName = resultSet.getString("buildingName");
@@ -317,11 +320,12 @@ public class Student {
 				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
 				
 				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
-			}
+			}*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resultSet;
 	}
 	
 	int reserveFacility(String studentID,String facilityName,String buildingName,String dateForReservation,String startTime,String endTime)
@@ -380,7 +384,7 @@ public class Student {
 		String reservation = "select *,F.facilityName,F.buildingName from reservation join facility F on reservation.facilityID = F.facilityID where studentID = '" + studentID +"'";
 		ResultSet resultSet = null;
 		
-		System.out.println("Facility Name\tBuilding Name\tDate of Reservation\t");
+		//System.out.println("Facility Name\tBuilding Name\tDate of Reservation\t");
 		try {
 			resultSet = st.executeQuery(reservation);
 			/*

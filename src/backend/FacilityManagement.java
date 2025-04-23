@@ -171,15 +171,15 @@ public class FacilityManagement {
 		return count;
 	}
 	
-	void viewAllFacilities()
+	ResultSet viewAllFacilities()
 	{
 		Statement st = dbCommands.getStatement();
 		String facility = "select * from facility" ;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 		
 		try {
 			resultSet = st.executeQuery(facility);
-			
+			/*
 			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
 			while(resultSet.next())
 			{
@@ -191,23 +191,25 @@ public class FacilityManagement {
 				
 				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
 			}
+			*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resultSet;
 	}
 	
-	void viewAllFacilities(String buildingName)
+	ResultSet viewAllFacilities(String buildingName)
 	{
 		Statement st = dbCommands.getStatement();
 		String facility = "select * from facility where buildingName = '" + buildingName + "'" ;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 		
 		try {
 			resultSet = st.executeQuery(facility);
 			
-			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
-			while(resultSet.next())
+			//System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			/*while(resultSet.next())
 			{
 				int facilityID = resultSet.getInt("facilityID");
 				String facilityName = resultSet.getString("facilityName");
@@ -215,24 +217,25 @@ public class FacilityManagement {
 				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
 				
 				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
-			}
+			}*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resultSet;
 	}
 	
-	void viewFacility(String facilityName)
+	ResultSet viewFacility(String facilityName)
 	{
 		Statement st = dbCommands.getStatement();
 		String facility = "select * from facility where facilityName = '" + facilityName + "'" ;
-		ResultSet resultSet;
+		ResultSet resultSet = null;
 		
 		try {
 			resultSet = st.executeQuery(facility);
 			
-			System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
-			while(resultSet.next())
+			//System.out.println("facilityID\tBuilding Name\tFacility Name\tCapacity\tStatus");
+			/*while(resultSet.next())
 			{
 				int facilityID = resultSet.getInt("facilityID");
 				String buildingName = resultSet.getString("buildingName");
@@ -240,11 +243,12 @@ public class FacilityManagement {
 				String status = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
 				
 				System.out.println(facilityID + "\t" + buildingName + "\t" + facilityName + "\t" + capacity + "\t" + status);
-			}
+			}*/
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resultSet;
 	}
 	
 	void displayCurrentUsers(String buildingName,String facilityName)

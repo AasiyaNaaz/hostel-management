@@ -417,16 +417,15 @@ class ForgotPasswordDialog extends JDialog {
    	blockfacility.addActionListener(e -> showBlockFacilityWindow());
    	 JButton deallocateroom= new JButton("*addFacility");
    	deallocateroom.addActionListener(e -> showAddFacilityWindow());
-   	 JButton viewentries = new JButton("*removeFacility");
-    	JButton viewexits = new JButton( "* viewExits");
     	JButton ro = new JButton("Make facility Available");
     	ro.addActionListener(e -> showUnblockFacilityWindow());
     	JButton r = new JButton("Display current users");
+    	r.addActionListener(e -> showCurrentUsersWindow());
     	
    	 
    	 
    	 
-   	 JButton[] buttons = {roomDetails, viewRoommates , changeroom ,roomcapacity,blockfacility ,deallocateroom,viewentries,viewexits, ro,r};
+   	 JButton[] buttons = {roomDetails, viewRoommates , changeroom ,roomcapacity,blockfacility ,deallocateroom, ro,r};
    			 
    	 for(JButton btn : buttons) {
    		 btn.setFocusPainted(false);
@@ -442,6 +441,71 @@ class ForgotPasswordDialog extends JDialog {
    	
   
    
+    }
+    
+    public void showCurrentUsersWindow() {
+        JFrame frame = new JFrame("Current Facility Users");
+        frame.setSize(350, 200);
+        frame.setLayout(new GridLayout(4, 2, 10, 10));
+
+        JTextField buildingNameField = new JTextField();
+        JTextField facilityNameField = new JTextField();
+        JButton viewButton = new JButton("View Users");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingNameField);
+        frame.add(new JLabel("Facility Name:"));
+        frame.add(facilityNameField);
+        frame.add(new JLabel(""));
+        frame.add(viewButton);
+
+        viewButton.addActionListener(e -> {
+            String buildingName = buildingNameField.getText();
+            String facilityName = facilityNameField.getText();
+            FacilityManagement fm = new FacilityManagement();
+            fm.displayCurrentUsers(buildingName, facilityName);
+            frame.dispose();
+        });
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    
+    public void showRemoveFacilityWindow() {
+        JFrame frame = new JFrame("Remove Facility");
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(4, 2, 10, 10));
+
+        JTextField buildingNameField = new JTextField();
+        JTextField facilityNameField = new JTextField();
+        JButton removeButton = new JButton("Remove Facility");
+
+        frame.add(new JLabel("Building Name:"));
+        frame.add(buildingNameField);
+        frame.add(new JLabel("Facility Name:"));
+        frame.add(facilityNameField);
+        frame.add(new JLabel(""));
+        frame.add(removeButton);
+
+        removeButton.addActionListener(e -> {
+            String buildingName = buildingNameField.getText();
+            String facilityName = facilityNameField.getText();
+
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to remove facility \"" + facilityName + "\"?",
+                    "Confirm Facility Removal",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                FacilityManagement fm = new FacilityManagement();
+                fm.removeFacility(buildingName, facilityName);
+                JOptionPane.showMessageDialog(frame, "Facility removed successfully.");
+                frame.dispose();
+            }
+        });
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
     
     public void showAddFacilityWindow() {
@@ -543,121 +607,66 @@ class ForgotPasswordDialog extends JDialog {
     
     private void viewFacility()
     {
-    	  JFrame  viewFacilitydashboard = new JFrame("View Facility");
-    	  viewFacilitydashboard.setSize(400,300);
-    	  viewFacilitydashboard.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    	  
-    	  JPanel mainPanel = new JPanel();
-    	  mainPanel.setLayout(new GridLayout(3,2,10,10));
-    	  
-    	  JLabel facilityName =  new JLabel("Facility Name:");
-    	  facilityName.setFont(new Font("Arial",Font.BOLD,14));
-    	  
-    	  JTextField facilitynamefield = new JTextField();
-    	  
-    	  mainPanel.add(facilityName);
-    	  mainPanel.add(facilitynamefield);
-    	  
-    	  
-    	 JButton searchButton = new JButton("Search");
-          searchButton.setFont(new Font("Arial", Font.BOLD, 14));
-          searchButton.setBackground(new Color(0, 123, 255));  
-          searchButton.setForeground(Color.WHITE);
-          searchButton.setFocusPainted(false);
-          mainPanel.add(searchButton);
+    	FacilityManagement fm = new FacilityManagement();
+    	ResultSet resultSet = fm.viewAllFacilities();
+    	
+    	try {
+    		try {
 
-          
-          
-          searchButton.addActionListener(e -> {
-        	  String facilityname = facilitynamefield.getText().trim();
-             
-              
-              if (facilityname.isEmpty()) {
-                  JOptionPane.showMessageDialog(this, "This field cannot be left blank.", "Error", JOptionPane.ERROR_MESSAGE);
-                  return;
-                  
-              }else {
-                
-            	  Student student = new Student();
-              ResultSet resultSet = student.viewFacility(facilityname);
-              
-              try {
-          		try {
+				// Create frame
+		        JFrame frame = new JFrame("Student Info");
+		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		        frame.setSize(700, 400);
 
-      		        JFrame frame = new JFrame("Student Info");
-      		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      		        frame.setSize(700, 400);
+		        // Sample data and column names
+		        String[][] data = new String[50][5];
+		        int index = 0;
+		        while (resultSet.next())
+		        {
+		        	data[index][0] = resultSet.getString("facilityID");
+		        	data[index][1] = resultSet.getString("facilityName");
+		        	data[index][2] = resultSet.getString("buildingName");
+		        	data[index][3] = resultSet.getString("Capacity"); 
+		        	data[index][4] = resultSet.getInt("status") == 1 ? "Available" : "Blocked/UnAvailable";
+		        	index++;
+		        }
+		        String[] columnNames = {"Facility ID","Facility Name", "Building Name","Capacity","Status"};
 
-      		      
-      		        String[][] data = new String[50][5];
-      		        int index = 0;
-      		        while (resultSet.next())
-      		        {
-      					
-      		        	data[index][0] = resultSet.getString("facilityID");
-      		        	data[index][1] = facilityname;
-      		        	data[index][2] = resultSet.getString("buildingName");
-      		        	data[index][3] = resultSet.getString("capacity");
-      		        	data[index][4] = resultSet.getInt("status") == 1 ? "Available" : "Blocked";
-      		        	index++;
-      		        }
-      		      if (index == 0) {
-      		        JOptionPane.showMessageDialog(viewFacilitydashboard, "No facility found with that name.", "Not Found", JOptionPane.INFORMATION_MESSAGE);
-      		        return;
-      		    }
+		        // Create JTable
+		        JTable table = new JTable(data, columnNames) {
+		            @Override
+		            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+		                Component c = super.prepareRenderer(renderer, row, column);
+		                if (!isRowSelected(row)) {
+		                    if (row % 2 == 0) {
+		                        c.setBackground(Color.WHITE);
+		                    } else {
+		                        c.setBackground(new Color(224, 240, 255)); // Light blue
+		                    }
+		                } else {
+		                    c.setBackground(getSelectionBackground());
+		                }
+		                return c;
+		            }
+		        }; 
 
-      		        String[] columnNames = {"Facility ID","Facility Name", "Building Name","Capacity","Status"};
+		        // Put the table inside a scroll pane
+		        JScrollPane scrollPane = new JScrollPane(table);
 
-      		        // Create JTable
-      		        JTable table = new JTable(data, columnNames) {
-      		            @Override
-      		            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-      		                Component c = super.prepareRenderer(renderer, row, column);
-      		                if (!isRowSelected(row)) {
-      		                    if (row % 2 == 0) {
-      		                        c.setBackground(Color.WHITE);
-      		                    } else {
-      		                        c.setBackground(new Color(224, 240, 255)); // Light blue
-      		                    }
-      		                } else {
-      		                    c.setBackground(getSelectionBackground());
-      		                }
-      		                return c;
-      		            }
-      		        }; 
-      		        //JTable table = new JTable(data, columnNames);
+		        // Add scroll pane to frame
+		        frame.add(scrollPane, BorderLayout.CENTER);
 
-      		        // Put the table inside a scroll pane
-      		        JScrollPane scrollPane = new JScrollPane(table);
-
-      		        // Add scroll pane to frame
-      		        frame.add(scrollPane, BorderLayout.CENTER);
-
-      		        // Set frame visible
-      		        frame.setVisible(true);
-      			} catch (SQLException e1) {
-      				// TODO Auto-generated catch block
-      				e1.printStackTrace();
-      			}		
-      		} catch (HeadlessException e2) {
-      			// TODO Auto-generated catch block
-      			e2.printStackTrace();
-      		}
-              
-          }});
-              
-             
-              
-    	  
-          viewFacilitydashboard.add(mainPanel,BorderLayout.NORTH);
-          viewFacilitydashboard.setLocationRelativeTo(null);
-          viewFacilitydashboard.setVisible(true);
-    	  
-    	 
-    	  
-    	  
+		        // Set frame visible
+		        frame.setVisible(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+		} catch (HeadlessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-    
     public void showUnblockFacilityWindow() {
         JFrame frame = new JFrame("Make Facility Available");
         frame.setSize(300, 200);
